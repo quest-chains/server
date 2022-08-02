@@ -45,6 +45,16 @@
       }
     ]
   },
+
+  "overrides": [
+    {
+      "files": "**/controllers/**/*.ts",
+      "rules": {
+        "import/no-default-export": "off",
+        "import/prefer-default-export": "off"
+      }
+    }
+  ],
   "settings": {
     "import/resolver": {
       "typescript": {}

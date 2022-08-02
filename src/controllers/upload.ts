@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
 import Busboy from 'busboy';
 import concat from 'concat-stream';
+import { Request, Response, Router } from 'express';
 import { Readable } from 'stream';
 
 import { pinFilesToIPFS, pinJsonToIPFS } from '@/utils/ipfs';
@@ -9,6 +9,7 @@ const router = Router();
 
 class HttpError extends Error {
   status = 500;
+
   constructor(status: number, message: string) {
     super(message);
     this.status = status;
@@ -28,7 +29,7 @@ router.post('/files', async (req: Request, res: Response) => {
 
   busboy.on('file', async (fieldname: string, fileStream: Readable) => {
     fileStream.pipe(
-      concat({ encoding: 'buffer' }, function (data: Buffer) {
+      concat({ encoding: 'buffer' }, (data: Buffer) => {
         const file = {
           name: fieldname,
           stream: () => Readable.from(data) as unknown as ReadableStream

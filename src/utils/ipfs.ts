@@ -1,10 +1,8 @@
 import IPFSClient from 'ipfs-http-client';
+import { Readable } from 'stream';
 import { Web3Storage } from 'web3.storage';
+
 import { WEB3_STORAGE_TOKEN } from '@/utils/constants';
-import { createReadStream } from 'fs';
-import { mkdtemp, rmdir, unlink, writeFile } from 'fs/promises';
-import os from 'os';
-import path from 'path';
 
 // the graph's hosted network ipfs node works best with ipfs-http-client 34.0.0
 const ipfsTheGraph = new IPFSClient({
@@ -27,23 +25,12 @@ export const pinFilesToIPFS = async (
 ) => web3Storage.put(files, { wrapWithDirectory: files.length > 1 });
 
 const pinBufferToIPFS = async (buffer: Buffer) => {
-  const name = path.join(
-    await mkdtemp(path.join(os.tmpdir(), 'metadatas-')),
-    'metadata.json'
-  );
-  await writeFile(name, buffer);
-
-  const readable = createReadStream(name) as unknown as ReadableStream<string>;
-
-  const tmpFile = {
+  const file = {
     name: 'metadata.json',
-    stream: () => readable
+    stream: () => Readable.from(buffer) as unknown as ReadableStream
   };
 
-  const cid = await web3Storage.put([tmpFile], { wrapWithDirectory: false });
-
-  await unlink(name);
-  await rmdir(path.dirname(name));
+  const cid = await web3Storage.put([file], { wrapWithDirectory: false });
 
   return cid;
 };
@@ -61,6 +48,7 @@ export const pinJsonToIPFS = async (body: unknown) => {
   }
   const objectString = JSON.stringify(body);
   const buffer = Buffer.from(objectString);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, cid] = await Promise.all([
     pinBufferToTheGraph(buffer),
     pinBufferToIPFS(buffer)
