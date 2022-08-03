@@ -3,6 +3,7 @@ import concat from 'concat-stream';
 import { Request, Response, Router } from 'express';
 import { Readable } from 'stream';
 
+import { UPLOAD_FILE_SIZE_LIMIT } from '@/utils/constants';
 import { pinFilesToIPFS, pinJsonToIPFS } from '@/utils/ipfs';
 
 const router = Router();
@@ -19,7 +20,7 @@ class HttpError extends Error {
 router.post('/files', async (req: Request, res: Response) => {
   const busboy = Busboy({
     headers: req.headers,
-    limits: { fileSize: 50 * 1024 * 1024 }
+    limits: { fileSize: UPLOAD_FILE_SIZE_LIMIT }
   });
   const files: {
     name: string;
