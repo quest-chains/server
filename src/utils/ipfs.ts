@@ -54,6 +54,5 @@ export const pinJsonToIPFS = async (body: unknown) => {
     pinBufferToIPFS(buffer)
   ]);
 
-  await ipfsTheGraph.pin.add(cid);
   return cid;
 };
