@@ -49,7 +49,7 @@ export const pinJsonToIPFS = async (body: unknown) => {
   const objectString = JSON.stringify(body);
   const buffer = Buffer.from(objectString);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, cid] = await Promise.all([
+  const [cid] = await Promise.all([
     pinBufferToTheGraph(buffer),
     pinBufferToIPFS(buffer)
   ]);
