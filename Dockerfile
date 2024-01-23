@@ -1,4 +1,4 @@
-FROM node:16 as base
+FROM node:18 as base
 WORKDIR /usr/src/app
 
 COPY yarn.lock .
@@ -8,7 +8,9 @@ COPY package.json ./package.json
 COPY tsconfig.json ./tsconfig.json
 
 ENV NODE_ENV $NODE_ENV
-ENV WEB3_STORAGE_TOKEN $WEB3_STORAGE_TOKEN
+ENV WEB3_STORAGE_KEY $WEB3_STORAGE_KEY
+ENV WEB3_STORAGE_PROOF $WEB3_STORAGE_PROOF
+ENV WEB3_STORAGE_DID $WEB3_STORAGE_DID
 
 RUN yarn install --frozen-lockfile
 

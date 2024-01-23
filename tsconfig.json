@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "strict": true,
     "declaration": true,
     "declarationMap": true,
@@ -10,6 +10,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
     "importHelpers": true,
     "target": "esnext",
     "skipLibCheck": true,
@@ -19,6 +20,7 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "noEmit": true,
+    "moduleResolution": "nodenext",
     "paths": {
       "@/*": ["*"]
     }

@@ -1,8 +1,5 @@
 import IPFSClient from 'ipfs-http-client';
 import { Readable } from 'stream';
-import { Web3Storage } from 'web3.storage';
-
-import { WEB3_STORAGE_TOKEN } from '@/utils/constants';
 
 // the graph's hosted network ipfs node works best with ipfs-http-client 34.0.0
 const ipfsTheGraph = new IPFSClient({
@@ -12,27 +9,31 @@ const ipfsTheGraph = new IPFSClient({
   'api-path': '/ipfs/api/v0/'
 });
 
-const web3Storage = new Web3Storage({
-  token: WEB3_STORAGE_TOKEN,
-  endpoint: new URL('https://api.web3.storage')
-});
+type FileLike = {
+  name: string;
+  stream: () => ReadableStream;
+};
 
-export const pinFilesToIPFS = async (
-  files: {
-    name: string;
-    stream: () => ReadableStream;
-  }[]
-) => web3Storage.put(files, { wrapWithDirectory: files.length > 1 });
+const w3upClient = import('./w3up.mts').then(m => m.w3upClient);
+
+export const pinFilesToIPFS = async (files: FileLike[]) => {
+  const client = await w3upClient;
+
+  if (files.length === 1) {
+    return client.uploadFile(files[0]);
+  }
+  return client.uploadDirectory(files);
+};
 
 const pinBufferToIPFS = async (buffer: Buffer) => {
   const file = {
     name: 'metadata.json',
-    stream: () => Readable.from(buffer) as unknown as ReadableStream
+    stream: () => Readable.toWeb(Readable.from(buffer)) as ReadableStream
   };
 
-  const cid = await web3Storage.put([file], { wrapWithDirectory: false });
+  const client = await w3upClient;
 
-  return cid;
+  return client.uploadFile(file);
 };
 
 const pinBufferToTheGraph = async (buffer: Buffer) => {
@@ -48,6 +49,7 @@ export const pinJsonToIPFS = async (body: unknown) => {
   }
   const objectString = JSON.stringify(body);
   const buffer = Buffer.from(objectString);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cid] = await Promise.all([
     pinBufferToTheGraph(buffer),
