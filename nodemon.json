@@ -1,6 +1,0 @@
-{
-  "watch": ["src"],
-  "execMap": {
-    "ts": "ts-node --esm -T"
-  }
-}

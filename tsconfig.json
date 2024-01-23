@@ -26,8 +26,9 @@
     }
   },
   "ts-node": {
+    "esm": true,
     "files": true,
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.mts"]
 }

@@ -4,7 +4,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "start": "ts-node --esm -T src/index.ts",
+    "start": "ts-node -T src/index.ts",
     "lint": "eslint --ignore-path .gitignore \"*/**/*.{js,jsx,ts,tsx}\" --fix",
     "format": "prettier --ignore-path .gitignore --write \"{*,**/*}.{ts,tsx,js,jsx,json,yml,yaml,md}\"",
     "typecheck": "tsc",
