@@ -33,7 +33,7 @@ router.post('/files', async (req: Request, res: Response) => {
       concat({ encoding: 'buffer' }, (data: Buffer) => {
         const file = {
           name: fieldname,
-          stream: () => Readable.from(data) as unknown as ReadableStream
+          stream: () => Readable.toWeb(Readable.from(data)) as ReadableStream
         };
         if (!(fileStream as unknown as { truncated: boolean }).truncated) {
           files.push(file);
