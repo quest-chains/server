@@ -20,9 +20,12 @@ export const pinFilesToIPFS = async (files: FileLike[]) => {
   const client = await w3upClient;
 
   if (files.length === 1) {
-    return client.uploadFile(files[0]);
+    const data = await client.uploadFile(files[0]);
+    return data.toV1().toString();
   }
-  return client.uploadDirectory(files);
+
+  const data = await client.uploadDirectory(files);
+  return data.toV1().toString();
 };
 
 const pinBufferToIPFS = async (buffer: Buffer) => {
@@ -33,7 +36,8 @@ const pinBufferToIPFS = async (buffer: Buffer) => {
 
   const client = await w3upClient;
 
-  return client.uploadFile(file);
+  const data = await client.uploadFile(file);
+  return data.toV1().toString();
 };
 
 const pinBufferToTheGraph = async (buffer: Buffer) => {
